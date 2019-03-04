@@ -1,0 +1,6 @@
+name: MCBS
+version: ${project.version}
+main: net.iegmann.mcbs.mcbs.MCBS
+api-version: 1.13
+authors: [iegMann, Wiz]
+description: Play BrawlStars in minecraft

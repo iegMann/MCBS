@@ -9,7 +9,8 @@ import java.util.*;
 
 /**
  * スコアボードの管理を行います。
- * ゲームに参加するプレイヤーを指定し、インスタンス化してください。
+ * プレイヤーにスコアボードを表示するには、
+ * showScoreBoard(BoardInfo boardinfo) を用いてください。
  * @author WiZ
  */
 public class ScoreBoardUtil {
@@ -21,6 +22,7 @@ public class ScoreBoardUtil {
    // BoardInfo boardInfoExample = new BoardInfo(p,"a",new ArrayList<BoardScore>(Arrays.asList( new BoardScore("Kills", 1,3),new BoardScore("Coins", 1000,2), new BoardScore("Steps", 123,1))));
     /**
      * デフォルトコンストラクタ
+     * TeamManagerから、ゲームに参加するプレイヤー、チームを取得します。
      * @param teamManager
      */
     public ScoreBoardUtil(TeamManager teamManager) {
@@ -28,7 +30,7 @@ public class ScoreBoardUtil {
     }
 
     /**
-     * 現在のBoardInfoの状況から、スコアボード
+     * 現在のBoardInfoの状況から、スコアボードを
      * @param boardInfo
      */
     public void showScoreBoard(BoardInfo boardInfo) {

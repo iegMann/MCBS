@@ -4,10 +4,16 @@ import net.iegmann.mcbs.mcbs.MCBS;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 /**
  * GameManagerクラスはゲームの参加者募集段階から終了までを管理します.
  * Singletonパターンによりただ一つ生成されたGameManagerインスタンスはSpigotサーバーの起動中は常にプールされています.
  * GameManagerインスタンスを取得する際は{@code GameManager#getInstance()}を利用してください.
+ * GameManagerによるゲーム管理を開始する場合、GameManager#start()を実行してください.
+ * 原則、GameManager#start()はMinecraftでのコマンド{@code /run}から、{@link net.iegmann.mcbs.mcbs.commands.RunManager}を経由して実行されます.
+ * GameManagerの状態を確認するにはGameManager#getState()を利用してください.
+ * GameManagerの状態の種類については{@link State}を参照してください.
  * GameManagerクラスの役割は別に存在するManagerクラス同士を橋渡しすることです.
  * GameManagerクラスに直接的な処理は記述せず、なるべく別のManagerクラスに処理を委譲するようにしてください.
  * @author iegMann
@@ -22,6 +28,7 @@ public class GameManager {
     private GameManager(){
         state = State.IDLE;
         plugin = MCBS.getInstance();
+        playerManager = new PlayerManager(true);
     }
 
     /**
@@ -39,6 +46,7 @@ public class GameManager {
 
     private State state;
     private JavaPlugin plugin;
+    private PlayerManager playerManager;
 
     /**
      * {@code GameManager#start()}でゲームの募集から終了までの一連の処理を開始します.
@@ -69,10 +77,9 @@ public class GameManager {
         BukkitRunnable runner = new BukkitRunnable() {
             @Override
             public void run() {
-                if(state ==State.PREPARING){
+                if(state == State.ONGOING){
                     preparing();
                     this.cancel();
-                    return;
                 }
             }
         };
@@ -123,10 +130,13 @@ public class GameManager {
         state = State.IDLE;
     }
 
+    public State getState(){
+        return state;
+    }
     /**
      * ゲームの進行状況を示す列挙型です.
      */
-    protected enum State{
+    public enum State{
         /**
          * GameManagerが実行されていない状態を示します.
          */
@@ -135,10 +145,6 @@ public class GameManager {
          * ゲームの募集中の段階を示します.
          */
         QUEUEING,
-        /**
-         * ゲームの開始前の設定をしている段階を示します.
-         */
-        PREPARING,
         /**
          * ゲームが進行中であることを示します.
          */
